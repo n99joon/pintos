@@ -29,6 +29,9 @@ static struct list ready_list;
    when they are first scheduled and removed when they exit. */
 static struct list all_list;
 
+//added for sleep
+static struct list sleep_list
+
 /* Idle thread. */
 static struct thread *idle_thread;
 
@@ -50,6 +53,9 @@ struct kernel_thread_frame
 static long long idle_ticks;	/* # of timer ticks spent idle. */
 static long long kernel_ticks;  /* # of timer ticks in kernel threads. */
 static long long user_ticks;	/* # of timer ticks in user programs. */
+
+//added for sleep
+static int64_t global_ticks;
 
 /* Scheduling. */
 #define TIME_SLICE 4        	/* # of timer ticks to give each thread. */
@@ -101,7 +107,9 @@ thread_init (void)
   lock_init (&tid_lock);
   list_init (&ready_list);
   list_init (&all_list);
-  
+  //added for sleep
+	list_init(&sleep_list);
+	global_ticks=INT64_MAX;
 
   /* Set up a thread structure for the running thread. */
   initial_thread = running_thread ();
@@ -342,6 +350,55 @@ thread_yield (void)
   cur->status = THREAD_READY;
   schedule ();
   intr_set_level (old_level);
+}
+
+//revise
+void
+thread_sleep(int64_t ticks)
+{
+  struct thread *cur = thread_current();
+  enum intr_level old_level;
+
+  ASSERT (!intr_context ());
+
+  old_level = intr_disable();
+  if (cur != idle_thread)
+{
+    list_push_back(&sleep_list, &cur-> elem);
+    cur->wakeup_ticks = ticks;
+}
+  if(global_ticks>ticks)
+    global_ticks = ticks;
+
+  cur->status = THREAD_BLOCKED;
+  schedule ();
+  intr_set_level (old_level);
+}
+
+//revise
+int64_t get_global_ticks(void){
+ return(global_ticks);
+}
+
+void 
+thread_wakeup(int64_t ticks)
+{
+  struct list_elem *e;
+  e = list_begin(&sleep_list);
+  int64_t new_global_ticks = INT64_MAX;
+  
+  while(e!=list_end(&sleep_list)){
+    struct thread *t = list_entry(e,struct thread, elem);
+    if(ticks >= t->wakeup_ticks){
+      e = list_remove(&t->elem);
+      thread_unblock(t);
+    }
+    else{
+      e = list_next(e);
+      new_global_ticks = (new_global_ticks>=t->wakeup_ticks)? t->wakeup_ticks : new_global_ticks; 
+    }
+}
+  global_ticks = new_global_ticks;
 }
 
 /* Invoke function 'func' on all threads, passing along 'aux'.
