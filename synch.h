@@ -29,7 +29,8 @@ struct lock
   
 //comparing the priorities of the lock's holder's priority(highest in the list).
 bool cmp_locks_priority(const struct list_elem *le1, const struct list_elem *le2, void *aux);
-
+bool cmp_sema_priority(const struct list_elem *le1, const struct list_elem *le2, void *aux);
+  
 void lock_init (struct lock *);
 void lock_acquire (struct lock *);
 bool lock_try_acquire (struct lock *);
