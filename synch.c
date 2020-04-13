@@ -204,7 +204,7 @@ lock_init (struct lock *lock)
 void
 lock_acquire (struct lock *lock)
 {
-	/*
+
   ASSERT (lock != NULL);
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
@@ -246,7 +246,7 @@ lock_acquire (struct lock *lock)
   
   //add the lock to the new holder's locklist(multiple donation)
   list_insert_ordered(&(lock->holder->locks),&(lock->lock_elem),cmp_locks_priority,NULL);
-  */
+  /*
 	  ASSERT (lock != NULL);
   ASSERT (!intr_context ());
   ASSERT (!lock_held_by_current_thread (lock));
@@ -266,12 +266,10 @@ lock_acquire (struct lock *lock)
   while (t_holder != NULL && t_holder->priority < t_current->priority) {
     // Donate priority to [t_holder]
     //thread_priority_donate(t_holder, t_current->priority);
-	  t_holder->priority=new_priority;
-	   if (t_holder == thread_current() && !list_empty (&ready_list)) {
-    
+	  t_holder->priority=t_current->priority;
+	   
       thread_yield();
     
-  }
 
     if (current_lock->priority < t_current->priority) {
       current_lock->priority = t_current->priority;
@@ -289,7 +287,7 @@ lock_acquire (struct lock *lock)
   lock->holder->wait_on_lock = NULL; // no longer waiting
   list_insert_ordered(&(lock->holder->locks), &(lock->lock_elem),
       cmp_locks_priority, NULL);
-  
+  */
 }
 
 /* Tries to acquires LOCK and returns true if successful or false
