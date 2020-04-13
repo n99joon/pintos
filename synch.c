@@ -45,6 +45,7 @@ bool cmp_locks_priority(const struct list_elem *le1, const struct list_elem *le2
     return retrn;
 }
 
+/*make a compare function for priority of semaphores*/
 bool cmp_sema_priority(const struct list_elem *le1, const struct list_elem *le2, void *aux){
     struct semaphore_elem *temp3 = list_entry (le1, struct semaphore_elem, elem);
     struct semaphore_elem *temp4 = list_entry (le2, struct semaphore_elem, elem);
@@ -85,6 +86,7 @@ sema_down (struct semaphore *sema)
   while (sema->value == 0) 
     {
       //list_push_back (&sema->waiters, &thread_current ()->elem);
+     //added for reordering according to priority
       list_insert_ordered(&sema->waiters, &thread_current ()->elem, cmp_priority, NULL);
       thread_block ();
     }
@@ -132,6 +134,7 @@ sema_up (struct semaphore *sema)
    sema->value++;
     
   if (!list_empty (&sema->waiters)){
+     //added to sort according to priority
       list_sort(&(sema->waiters), cmp_priority,0);
    thread_unblock(list_entry (list_pop_front (&sema->waiters), struct thread, elem));
   }
@@ -378,6 +381,7 @@ cond_signal (struct condition *cond, struct lock *lock UNUSED)
   ASSERT (lock != NULL);
   ASSERT (!intr_context ());
   ASSERT (lock_held_by_current_thread (lock));
+   //added to sort the waiter list before popping the first element. 
   list_sort(&cond->waiters, cmp_sema_priority,0);
   if (!list_empty (&cond->waiters)) 
     sema_up (&list_entry (list_pop_front (&cond->waiters),
