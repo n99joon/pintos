@@ -424,7 +424,7 @@ thread_set_priority (int new_priority)
 {
    //update thread if there is no priority donated
   if(thread_current()->priority==thread_current()->original_priority)
-	  thread_current()->priority==new_priority;
+	  thread_current()->priority=new_priority;
 	   
   thread_current ()->original_priority= new_priority;
   /*update if the priority is lower than the new priority*/
