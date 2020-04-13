@@ -257,7 +257,7 @@ lock_acquire (struct lock *lock)
   struct thread *t_current = thread_current();
 
   // The current process is waiting on [lock]
-  t_current->waiting_lock = lock;
+  t_current->wait_on_lock = lock;
 
   if(t_holder == NULL) {
     current_lock->priority = t_current->priority;
@@ -278,7 +278,7 @@ lock_acquire (struct lock *lock)
       current_lock->priority = t_current->priority;
     }
 
-      current_lock = t_holder->waiting_lock;
+      current_lock = t_holder->wait_on_lock;
       if(current_lock == NULL) break;
       t_holder = current_lock->holder;
   }
@@ -287,8 +287,8 @@ lock_acquire (struct lock *lock)
   lock->holder = thread_current ();
 
   // lock is finally acquired.
-  lock->holder->waiting_lock = NULL; // no longer waiting
-  list_insert_ordered(&(lock->holder->locks), &(lock->lockelem),
+  lock->holder->wait_on_lock = NULL; // no longer waiting
+  list_insert_ordered(&(lock->holder->locks), &(lock->lock_elem),
       cmp_locks_priority, NULL);
   
 }
