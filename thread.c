@@ -430,9 +430,15 @@ thread_set_priority (int new_priority)
   /*update if the priority is lower than the new priority*/
   if(thread_current()->priority < new_priority)
       thread_current()->priority=new_priority;
-  
-  list_sort(&ready_list, cmp_priority,0);
-  thread_yield();
+	
+  if (!list_empty (&ready_list)) {
+    struct thread *next = list_entry(list_begin(&ready_list), struct thread, elem);
+    if (next != NULL && next->priority > new_priority) {
+      thread_yield();
+    }
+  }
+  //list_sort(&ready_list, cmp_priority,0);
+  //thread_yield();
   
 }
 
