@@ -118,8 +118,7 @@ void
 sema_up (struct semaphore *sema) 
 {
   enum intr_level old_level;
-  struct thread *target = NULL;
-	
+ 
   ASSERT (sema != NULL);
  
 	
@@ -128,8 +127,7 @@ sema_up (struct semaphore *sema)
 	
   if (!list_empty (&sema->waiters)){
   	list_sort(&(sema->waiters), cmp_priority,0);
-    target=list_entry (list_pop_front (&sema->waiters), struct thread, elem);
-    thread_unblock(target);
+   thread_unblock(list_entry (list_pop_front (&sema->waiters), struct thread, elem));
   }
 	
   
