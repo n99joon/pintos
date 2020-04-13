@@ -274,12 +274,14 @@ thread_unblock (struct thread *t)
   //list_push_back (&ready_list, &t->elem);
   list_insert_ordered(&ready_list, & t-> elem, cmp_priority, NULL );
  
+	 t->status = THREAD_READY;
+	
 	//added for reupdate 
    if (thread_current() != idle_thread && thread_current()->priority < t->priority)
      thread_yield();
 
  
-  t->status = THREAD_READY;
+ 
   intr_set_level (old_level);
 }
 
