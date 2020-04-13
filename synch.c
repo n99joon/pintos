@@ -268,10 +268,9 @@ lock_acquire (struct lock *lock)
     //thread_priority_donate(t_holder, t_current->priority);
 	  t_holder->priority=new_priority;
 	   if (t_holder == thread_current() && !list_empty (&ready_list)) {
-    struct thread *next = list_entry(list_begin(&ready_list), struct thread, elem);
-    if (next != NULL && next->priority > new_priority) {
+    
       thread_yield();
-    }
+    
   }
 
     if (current_lock->priority < t_current->priority) {
