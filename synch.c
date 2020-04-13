@@ -43,7 +43,7 @@ bool cmp_locks_priority(const struct list_elem *le1, const struct list_elem *le2
 bool cmp_sema_priority(const struct list_elem *le1, const struct list_elem *le2, void *aux){
     struct semaphore_elem *temp1 = list_entry (le1, struct semaphore_elem, lock_elem);
     struct semaphore_elem *temp2 = list_entry (le2, struct semaphore_elem, lock_elem);
-    bool retrn = (temp1->priority > temp2->priority) ?true :false;
+    bool retrn = (temp1->semaphore.priority > temp2->semaphore.priority) ?true :false;
     return retrn;
 }
 /* Initializes semaphore SEMA to VALUE.  A semaphore is a
