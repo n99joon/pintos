@@ -329,8 +329,10 @@ lock_release (struct lock *lock)
   
   //priority donation down the chain.
   //if empty locks, then the priority is the original priority
-  if (list_empty(&thread_current()->locks))
+  if (list_empty(&thread_current()->locks)){
   	thread_current()->priority=thread_current()->original_priority;
+	 thread_yield();
+  }
   	//or find the highest priority among the locks in the list and recalculate by yield.
   else{
   	list_sort(&(thread_current()->locks), cmp_locks_priority, NULL);
