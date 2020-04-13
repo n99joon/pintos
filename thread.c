@@ -30,7 +30,7 @@ static struct list ready_list;
 static struct list all_list;
 
 //added for sleep
-static struct list sleep_list
+static struct list sleep_list;
 
 /* Idle thread. */
 static struct thread *idle_thread;
