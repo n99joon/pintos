@@ -207,7 +207,7 @@ thread_create (const char *name, int priority,
   /* Prepare thread for first run by initializing its stack.
  	Do this atomically so intermediate values for the 'stack'
  	member cannot be observed. */
-  old_level = intr_disable ();
+  //old_level = intr_disable ();
 
   /* Stack frame for kernel_thread(). */
   kf = alloc_frame (t, sizeof *kf);
