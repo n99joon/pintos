@@ -89,6 +89,8 @@ struct thread
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority;                       /* Priority. */
     struct list_elem allelem;           /* List element for all threads list. */
+	//added for sleep
+	int64_t wakeup_ticks;
 	//added
 	int original_priority; 				/*original priority*/
 	struct lock *wait_on_lock; //the lock that the blocked thread is waiting
@@ -146,4 +148,8 @@ void thread_set_nice (int);
 int thread_get_recent_cpu (void);
 int thread_get_load_avg (void);
 
+//added for sleep
+void thread_sleep(int64_t);
+int64_t get_global_ticks(void);
+void thread_wakeup(int64_t);
 #endif /* threads/thread.h */
